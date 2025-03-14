@@ -128,3 +128,55 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Composer dependencies (if using Composer)
+vendor/
+composer.lock
+
+# Ignore environment/config files
+# .env
+# config/database.php
+
+# Ignore logs and debug files
+*.log
+logs/
+debug.log
+storage/logs/
+
+# Ignore cache and session files
+cache/
+*.cache
+*.bak
+tmp/
+sessions/
+
+# Ignore XAMPP/LAMP/MAMP server files
+xampp/
+htdocs/
+*.sql
+*.db
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore deployment files
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore generated JWT keys (if any)
+jwt_private.key
+jwt_public.key
+
+# Ignore backup files
+*.bak
+*.swp
+*.swo
