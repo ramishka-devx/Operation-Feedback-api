@@ -2,7 +2,7 @@
 require 'vendor/autoload.php';
 use Firebase\JWT\JWT;
 
-$key = "facultyOFEngineeringUORisTheBESTOFLK24UORPCC";
+$key = "facultyOFEngineeringUORisTheBESTOFLK24UORPCC"; // TODO : move this to env file - Ramishka
 
 function createJWT($userId, $regNo) {
     global $key;

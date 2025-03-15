@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../controllers/ComplainController.php';
+require_once __DIR__ . '/../controllers/CategoryController.php';
 
 use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
@@ -22,6 +23,7 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/user/complaints', ['ComplainController', 'getUserComplaints']);
     $r->addRoute('POST', '/user/complaints/new', ['ComplainController', 'addComplain']);
     $r->addRoute('GET', '/user/complaints/{complainID}', ['ComplainController', 'getComplainHistory']);
+    $r->addRoute('GET', '/categories', ['CategoryController', 'getAllCategories']);
 
     // Default route
     $r->addRoute('GET', '/', function () {

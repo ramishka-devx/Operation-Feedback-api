@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 class AuthMiddleware {
     public static function decodeToken($token) {
-        $secretKey = "facultyOFEngineeringUORisTheBESTOFLK24UORPCC"; // Change this to your actual secret key
+        $secretKey = "facultyOFEngineeringUORisTheBESTOFLK24UORPCC"; // TODO :: move this into env file - Ramishka
         try {
             $decoded = JWT::decode($token, new Key($secretKey, 'HS256'));
             return (array) $decoded;
