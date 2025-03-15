@@ -17,13 +17,36 @@ class AuthController{
     }
 
     public function login($data) {
-        $userData = $this->user->login($data['regNo']);
-        if ($userData && password_verify($data['password'], $userData['password'])) {
+        try {
+            if (empty($data['regNo']) || empty($data['password'])) {
+                http_response_code(400); // Bad Request
+                echo json_encode(["message" => "Missing regNo or password"]);
+                return;
+            }
+    
+            $userData = $this->user->login($data['regNo']);
+            if (!$userData) {
+                http_response_code(401); // Unauthorized
+                echo json_encode(["message" => "Invalid credentials"]);
+                return;
+            }
+    
+            if (!password_verify($data['password'], $userData['password'])) {
+                http_response_code(401); // Unauthorized
+                echo json_encode(["message" => "Invalid credentials"]);
+                return;
+            }
+    
             $token = createJWT($userData['userId'], $userData['regNo']);
+    
+            http_response_code(200); // OK
             echo json_encode(["token" => $token]);
-        } else {
-            echo json_encode(["message" => "Invalid credentials"]);
+    
+        } catch (Exception $e) {
+            http_response_code(500); // Internal Server Error
+            echo json_encode(["error" => "An error occurred", "message" => $e->getMessage()]);
         }
     }
+    
 }
 ?>
