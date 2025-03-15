@@ -9,7 +9,7 @@ download the database from here : https://drive.google.com/file/d/1UlFfK1U5R7jh5
 
 Make sure you have installed PHP and Composer. Then, run:
 
-##for installing packages
+##for installing packages :
 composer install
 
 ##start the server :
