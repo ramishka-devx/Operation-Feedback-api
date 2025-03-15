@@ -12,12 +12,16 @@ header("Content-Type: application/json");
 // FastRoute Dispatcher
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     // Auth Routes
-    $r->addRoute('POST', '/login', ['AuthController', 'login']);
+    $r->addRoute('POST', '/auth/login', ['AuthController', 'login']);
 
     // Complaint Routes
     $r->addRoute('GET', '/complaints', ['ComplainController', 'getAllComplaints']);
-    $r->addRoute('GET', '/user-complaints/{id}', ['ComplainController', 'getUserComplaints']);
     $r->addRoute('POST', '/add-complaint', ['ComplainController', 'addComplain']);
+
+    //user Routes
+    $r->addRoute('GET', '/user/complaints', ['ComplainController', 'getUserComplaints']);
+    $r->addRoute('POST', '/user/complaints/new', ['ComplainController', 'addComplain']);
+    $r->addRoute('GET', '/user/complaints/{complainID}', ['ComplainController', 'getComplainHistory']);
 
     // Default route
     $r->addRoute('GET', '/', function () {
@@ -27,7 +31,7 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
 
 // Get HTTP method and URI
 $httpMethod = $_SERVER['REQUEST_METHOD'];
-$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$requestUri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
 // Get request body for POST requests
 $requestBody = ($httpMethod === 'POST' || $httpMethod === 'PUT') ? json_decode(file_get_contents("php://input"), true) : [];

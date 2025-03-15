@@ -40,7 +40,7 @@ class AuthController{
             $token = createJWT($userData['userId'], $userData['regNo']);
     
             http_response_code(200); // OK
-            echo json_encode(["token" => $token]);
+            echo json_encode(["token" => $token,"roll"=>$userData['rollId']]);
     
         } catch (Exception $e) {
             http_response_code(500); // Internal Server Error
