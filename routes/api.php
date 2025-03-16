@@ -19,6 +19,7 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/admin/complaints/all', ['ComplainController', 'getAllComplaints']);
     $r->addRoute('GET', '/admin/complaints/my', ['ComplainController', 'getInchargeComplaints']);
     $r->addRoute('PUT', '/admin/complaints/status/update', ['ComplainController', 'updateComplaintStatus']);
+    $r->addRoute('PUT', '/admin/complaints/priority/update', ['ComplainController', 'updateComplainPriority']);
 
     //user Routes
     $r->addRoute('GET', '/user/complaints', ['ComplainController', 'getUserComplaints']);

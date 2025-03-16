@@ -86,6 +86,15 @@ class Complain {
 
         return $stmt->execute();
     }
+
+    public function updatePriority($complainId,$newPriority){
+        $query = "UPDATE complains SET priority = :priority WHERE complainId = :complainId";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':priority', $newPriority, PDO::PARAM_INT);
+        $stmt->bindParam(':complainId', $complainId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
     
 }
 

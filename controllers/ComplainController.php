@@ -148,7 +148,7 @@ class ComplainController
                 ResponseHelper::sendResponse(400, ["message" => "Token is required"]);
             }
 
-            //middleware to check if user has permission to fetch all complains
+            //middleware to check if user has permission to view incharge complains
             if (!checkPermission($_GET['token'], "viewInchargedComplains")) {
                 ResponseHelper::sendResponse(403, ["message" => "Unauthorized"]);
                 exit;
@@ -203,6 +203,45 @@ class ComplainController
 
         // Update the complaint status
         $updated = $this->complain->updateStatus($userId, $complainId, $newStatus);
+        if ($updated) {
+            echo json_encode(["message" => "Complaint status updated successfully"]);
+        } else {
+            echo json_encode(["error" => "Failed to update status"]);
+            http_response_code(500);
+        }
+    }
+
+    public function updateComplainPriority(){
+        $data = json_decode(file_get_contents("php://input"), true);
+        $token = $_GET['token'] ?? null;
+        $complainId = $data['complainId'] ?? null;
+        $newPriority = $data['priority'] ?? null;
+
+        if (!$token || !$complainId || !$newPriority) {
+            echo json_encode(["error" => "Missing required parameters"]);
+            http_response_code(400);
+            return;
+        }
+
+        // Decode JWT token
+        $decoded = AuthMiddleware::decodeToken($token);
+        if (!$decoded) {
+            echo json_encode(["error" => "Invalid token"]);
+            http_response_code(401);
+            return;
+        }
+
+        $userId = $decoded['userId'];
+
+        // Verify the user is in charge of the complaint's category
+        if (!$this->complain->isUserInchargeOfComplaint($userId, $complainId)) {
+            echo json_encode(["error" => "Unauthorized"]);
+            http_response_code(403);
+            return;
+        }
+
+        // Update the complaint status
+        $updated = $this->complain->updatePriority($complainId, $newPriority);
         if ($updated) {
             echo json_encode(["message" => "Complaint status updated successfully"]);
         } else {

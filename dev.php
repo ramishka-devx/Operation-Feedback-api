@@ -18,11 +18,12 @@ $userId = 5;
 // Call fetchComplaintsForIncharge function
 // $results = $complain->fetchComplaintsForIncharge($userId, "DESC");
 
-$results = $complain->isUserInchargeOfComplaint($userId, 6);
+// $results = $complain->isUserInchargeOfComplaint($userId, 6);
+$results = $complain->updatePriority(3,1);
 
-echo $results ? "1" : "0";
+// echo $results ? "1" : "0";
 // Display the output
-// echo "<pre>";
-// print_r($results);
-// echo "</pre>";
+echo "<pre>";
+print_r($results);
+echo "</pre>";
 ?>
