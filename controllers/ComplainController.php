@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../models/Complain.php';
 require_once __DIR__ . '/../helpers/ResponseHelper.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
+require_once __DIR__. '/../helpers/checkPermission.php';
 class ComplainController {
     private $db;
     private $conn;
@@ -16,6 +17,16 @@ class ComplainController {
 
     public function getAllComplaints($params = []) {
         try {
+            if (!isset($_GET['token'])) {
+                ResponseHelper::sendResponse(400, ["message" => "Token is required"]);
+            }
+
+            //middleware to check if user has permission to fetch all complains
+            if (!checkPermission($_GET['token'], "ViewAllComplains")) {
+                ResponseHelper::sendResponse(403, ["message" => "Unauthorized"]);
+                exit;
+            }
+
             $sortOrder = isset($params['sortOrder']) ? strtoupper($params['sortOrder']) : 'DESC';
             if (!in_array($sortOrder, ['ASC', 'DESC'])) {
                 $sortOrder = 'DESC';

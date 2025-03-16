@@ -1,6 +1,7 @@
 <?php
-require 'vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 $key = "facultyOFEngineeringUORisTheBESTOFLK24UORPCC"; // TODO : move this to env file - Ramishka
 
@@ -15,4 +16,15 @@ function createJWT($userId, $regNo) {
     ];
     return JWT::encode($payload, $key, 'HS256');
 }
+
+function decodeJWT($token) {
+    try {
+        global $key;
+        $decoded = JWT::decode($token, new Key($key, 'HS256'));
+        return (array) $decoded;
+    } catch (Exception $e) {
+        return false; // Invalid token
+    }
+}
+
 ?>
