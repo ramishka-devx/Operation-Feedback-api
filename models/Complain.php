@@ -50,6 +50,18 @@ class Complain {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function fetchComplaintsForIncharge($userId, $sortOrder = 'DESC'){
+        $query = "SELECT c.*, ct.title FROM complains c
+                        JOIN categoryIncharge ci ON c.categoryId = ci.categoryId
+                        JOIN users u ON ci.rollId = u.rollId
+                        JOIN categories ct ON c.categoryId = ct.categoryId
+                    WHERE u.userId = :userId ORDER BY c.complainId {$sortOrder} ;";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     
 }
 

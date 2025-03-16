@@ -16,8 +16,8 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('POST', '/auth/login', ['AuthController', 'login']);
 
     // Complaint Routes
-    $r->addRoute('GET', '/complaints', ['ComplainController', 'getAllComplaints']);
-    $r->addRoute('POST', '/add-complaint', ['ComplainController', 'addComplain']);
+    $r->addRoute('GET', '/admin/complaints/all', ['ComplainController', 'getAllComplaints']);
+    $r->addRoute('GET', '/admin/complaints/my', ['ComplainController', 'getInchargeComplaints']);
 
     //user Routes
     $r->addRoute('GET', '/user/complaints', ['ComplainController', 'getUserComplaints']);
@@ -25,6 +25,7 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/user/complaints/{complainID}', ['ComplainController', 'getComplainHistory']);
     $r->addRoute('GET', '/categories', ['CategoryController', 'getAllCategories']);
 
+    
     // Default route
     $r->addRoute('GET', '/', function () {
         echo json_encode(["message" => "Welcome to the API"]);
