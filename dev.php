@@ -16,10 +16,13 @@ $complain = new Complain($db);
 $userId = 5; 
 
 // Call fetchComplaintsForIncharge function
-$results = $complain->fetchComplaintsForIncharge($userId, "DESC");
+// $results = $complain->fetchComplaintsForIncharge($userId, "DESC");
 
+$results = $complain->isUserInchargeOfComplaint($userId, 6);
+
+echo $results ? "1" : "0";
 // Display the output
-echo "<pre>";
-print_r($results);
-echo "</pre>";
+// echo "<pre>";
+// print_r($results);
+// echo "</pre>";
 ?>

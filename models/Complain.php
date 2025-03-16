@@ -62,6 +62,30 @@ class Complain {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function isUserInchargeOfComplaint($userId, $complainId){
+        $query = "SELECT 1 FROM complains c
+                        JOIN categoryIncharge ci ON c.categoryId = ci.categoryId
+                        JOIN users u ON u.rollId = ci.rollId
+                    WHERE u.userId = :userId AND c.complainId = :complainId ";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':complainId', $complainId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() ? true : false;
+    }
+    
+    public function updateStatus($userId, $complainId,$newStatus){
+        $query = "INSERT INTO activities (userId, complainId, description) VALUES (:userId, :complainId, :description)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':complainId', $complainId, PDO::PARAM_INT);
+        $stmt->bindParam(':description', $newStatus, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
     
 }
 

@@ -3,6 +3,8 @@ require_once __DIR__ . '/../models/Complain.php';
 require_once __DIR__ . '/../helpers/ResponseHelper.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
 require_once __DIR__ . '/../helpers/checkPermission.php';
+require_once __DIR__ . '/../helpers/jwt_helper.php';
+
 class ComplainController
 {
     private $db;
@@ -167,6 +169,45 @@ class ComplainController
             ResponseHelper::sendResponse(200, $complaints);
         } catch (PDOException $e) {
             ResponseHelper::sendResponse(500, ["error" => "Database error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function updateComplaintStatus(){
+        $data = json_decode(file_get_contents("php://input"), true);
+        $token = $_GET['token'] ?? null;
+        $complainId = $data['complainId'] ?? null;
+        $newStatus = $data['status'] ?? null;
+
+        if (!$token || !$complainId || !$newStatus) {
+            echo json_encode(["error" => "Missing required parameters"]);
+            http_response_code(400);
+            return;
+        }
+
+        // Decode JWT token
+        $decoded = AuthMiddleware::decodeToken($token);
+        if (!$decoded) {
+            echo json_encode(["error" => "Invalid token"]);
+            http_response_code(401);
+            return;
+        }
+
+        $userId = $decoded['userId'];
+
+        // Verify the user is in charge of the complaint's category
+        if (!$this->complain->isUserInchargeOfComplaint($userId, $complainId)) {
+            echo json_encode(["error" => "Unauthorized"]);
+            http_response_code(403);
+            return;
+        }
+
+        // Update the complaint status
+        $updated = $this->complain->updateStatus($userId, $complainId, $newStatus);
+        if ($updated) {
+            echo json_encode(["message" => "Complaint status updated successfully"]);
+        } else {
+            echo json_encode(["error" => "Failed to update status"]);
+            http_response_code(500);
         }
     }
 }

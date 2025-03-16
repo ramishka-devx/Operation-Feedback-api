@@ -15,9 +15,10 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     // Auth Routes
     $r->addRoute('POST', '/auth/login', ['AuthController', 'login']);
 
-    // Complaint Routes
+    // admin Routes
     $r->addRoute('GET', '/admin/complaints/all', ['ComplainController', 'getAllComplaints']);
     $r->addRoute('GET', '/admin/complaints/my', ['ComplainController', 'getInchargeComplaints']);
+    $r->addRoute('PUT', '/admin/complaints/status/update', ['ComplainController', 'updateComplaintStatus']);
 
     //user Routes
     $r->addRoute('GET', '/user/complaints', ['ComplainController', 'getUserComplaints']);
