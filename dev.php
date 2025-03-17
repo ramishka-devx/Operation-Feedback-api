@@ -19,7 +19,7 @@ $userId = 5;
 // $results = $complain->fetchComplaintsForIncharge($userId, "DESC");
 
 // $results = $complain->isUserInchargeOfComplaint($userId, 6);
-$results = $complain->updatePriority(3,1);
+$results = $complain->getUserComplaints(2,10,0,"complainId","DESC");
 
 // echo $results ? "1" : "0";
 // Display the output

@@ -22,7 +22,7 @@ class ComplainController
     {
         try {
             if (!isset($_GET['token'])) {
-                ResponseHelper::sendResponse(400, ["message" => "Token is required"]);
+                ResponseHelper::sendResponse(400, ["message" => "Missing required fields"]);
             }
 
             //middleware to check if user has permission to fetch all complains
@@ -31,12 +31,18 @@ class ComplainController
                 exit;
             }
 
-            $sortOrder = isset($params['sortOrder']) ? strtoupper($params['sortOrder']) : 'DESC';
-            if (!in_array($sortOrder, ['ASC', 'DESC'])) {
-                $sortOrder = 'DESC';
+            $limit = $_GET['limit'] ?? 10;
+            $page  = $_GET['page'] ?? 1;
+            $offset = ($page - 1) * $limit;
+
+            $sortMethod = isset($_GET['sortMethod']) ? strtoupper($_GET['sortMethod']) : 'DESC';
+            if (!in_array($sortMethod, ['ASC', 'DESC'])) {
+                $sortMethod = 'DESC';
             }
 
-            $complaints = $this->complain->getAllComplaints($sortOrder);
+            $orderBy = $_GET['orderBy'] ?? 'date';
+
+            $complaints = $this->complain->getAllComplaints($limit, $offset,$orderBy, $sortMethod);
 
             if (!$complaints) {
                 ResponseHelper::sendResponse(404, ["message" => "No complaints found"]);
@@ -60,8 +66,20 @@ class ComplainController
 
             $userId = $decoded['userId']; // Extract userId from token
 
+            
+            $limit = $_GET['limit'] ?? 10;
+            $page  = $_GET['page'] ?? 1;
+            $offset = ($page - 1) * $limit;
+
+            $sortMethod = isset($_GET['sortMethod']) ? strtoupper($_GET['sortMethod']) : 'DESC';
+            if (!in_array($sortMethod, ['ASC', 'DESC'])) {
+                $sortMethod = 'DESC';
+            }
+
+            $orderBy = $_GET['orderBy'] ?? 'date';
+
             // Fetch complaints for that user
-            $complaints = $this->complain->getUserComplaints($userId, 'DESC');
+            $complaints = $this->complain->getUserComplaints($userId, $limit, $offset, $orderBy, $sortMethod);
 
             if (!$complaints) {
                 ResponseHelper::sendResponse(404, ["message" => "No complaints found"]);
@@ -82,7 +100,7 @@ class ComplainController
 
             // Decode the JWT token
             $decoded = AuthMiddleware::decodeToken($_GET['token']);
-            $userId = $decoded['userId']; // Extract userId from token
+            $userId = $decoded['userId']; 
 
             // Add the userId to the data array
             $data['userId'] = $userId;
@@ -159,8 +177,20 @@ class ComplainController
 
             $userId = $decoded['userId']; // Extract userId from token
 
+            //
+            $limit = $_GET['limit'] ?? 10;
+            $page  = $_GET['page'] ?? 1;
+            $offset = ($page - 1) * $limit;
+
+            $sortMethod = isset($_GET['sortMethod']) ? strtoupper($_GET['sortMethod']) : 'DESC';
+            if (!in_array($sortMethod, ['ASC', 'DESC'])) {
+                $sortMethod = 'DESC';
+            }
+
+            $orderBy = $_GET['orderBy'] ?? 'date';
+            echo $sortMethod;
             // Fetch complaints for that user
-            $complaints = $this->complain->fetchComplaintsForIncharge($userId, 'DESC');
+            $complaints = $this->complain->fetchComplaintsForIncharge($userId,$limit,$offset,$orderBy,$sortMethod);
 
             if (!$complaints) {
                 ResponseHelper::sendResponse(404, ["message" => "No complaints found"]);
@@ -172,7 +202,8 @@ class ComplainController
         }
     }
 
-    public function updateComplaintStatus(){
+    public function updateComplaintStatus()
+    {
         $data = json_decode(file_get_contents("php://input"), true);
         $token = $_GET['token'] ?? null;
         $complainId = $data['complainId'] ?? null;
@@ -211,7 +242,8 @@ class ComplainController
         }
     }
 
-    public function updateComplainPriority(){
+    public function updateComplainPriority()
+    {
         $data = json_decode(file_get_contents("php://input"), true);
         $token = $_GET['token'] ?? null;
         $complainId = $data['complainId'] ?? null;
