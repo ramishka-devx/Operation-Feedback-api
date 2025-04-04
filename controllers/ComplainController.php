@@ -188,7 +188,7 @@ class ComplainController
             }
 
             $orderBy = $_GET['orderBy'] ?? 'date';
-            echo $sortMethod;
+            
             // Fetch complaints for that user
             $complaints = $this->complain->fetchComplaintsForIncharge($userId,$limit,$offset,$orderBy,$sortMethod);
 
